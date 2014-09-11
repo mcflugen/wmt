@@ -1,6 +1,7 @@
 import web
 import json
 import os
+import shutil
 
 from ..models import (models, users, components)
 from ..render import render
@@ -120,6 +121,24 @@ class Save(object):
 
         web.header('Content-Type', 'application/json; charset=utf-8')
         return json.dumps(int(id))
+
+
+class SaveAs(New):
+    def GET(self, id):
+        return New.GET(self)
+
+    def POST(self, id):
+        new_id = New.POST(self)
+
+        src = models.get_model_upload_dir(id)
+        dst = models.get_model_upload_dir(new_id)
+
+        for name in os.listdir(src):
+            srcname = os.path.join(src, name)
+            dstname = os.path.join(dst, name)
+            shutil.copy2(srcname, dstname)
+
+        return new_id
 
 
 class Delete(object):
