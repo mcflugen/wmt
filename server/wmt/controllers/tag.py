@@ -81,6 +81,31 @@ class TagModel(object):
         return json.dumps(tags.get_model_tags(form.d.model))
 
 
+class UntagModel(object):
+    form = web.form.Form(
+        web.form.Textbox('model',
+                         size=30, description='Model:'),
+        web.form.Textbox('tag',
+                         size=30, description='Tag:'),
+        web.form.Button('Submit')
+    )
+    def GET(self):
+        return render.titled_form('Tag Model', self.form())
+
+    def POST(self):
+        web.header('Content-Type', 'application/json; charset=utf-8')
+
+        form = self.form()
+        if not form.validates():
+            return render.titled_form('Tag Model', form)
+
+        try:
+            tags.untag_model(int(form.d.model), int(form.d.tag))
+        except tags.BadIdError:
+            raise web.BadRequest('tag does not exist')
+        return json.dumps(tags.get_model_tags(form.d.model))
+
+
 class ModelTags(object):
     def GET(self, id):
         web.header('Content-Type', 'application/json; charset=utf-8')
