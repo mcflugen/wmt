@@ -68,7 +68,7 @@ def get_private_models():
                      vars=dict(owner=get_username()))
 
 
-def get_models():
+def get_models(sortby=None):
     where = ' OR '.join(['owner=$user', 'owner=\'\''])
     ids = set()
     for entry in db.select('models', order='id DESC', where=where, what='id', vars=dict(user=get_username())):
@@ -86,6 +86,9 @@ def get_models():
             models.append(get_model(id))
         except BadIdError:
             pass
+
+    if sortby:
+        models.sort(key=lambda model: model[sortby])
 
     return models
 

@@ -206,7 +206,7 @@ class Show(object):
 class List(object):
     def GET(self):
         web.header('Content-Type', 'application/json; charset=utf-8')
-        all_models = models.get_models()
+        all_models = models.get_models(sortby='name')
         resp = []
         for model in all_models:
             resp.append(dict(id=model.id, name=model.name))
