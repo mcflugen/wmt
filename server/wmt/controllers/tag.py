@@ -116,5 +116,5 @@ class Query(object):
     def GET(self):
         web.header('Content-Type', 'application/json; charset=utf-8')
         params = web.input(tags='')
-        models = tags.select_model(params.tags.split(','))
+        models = tags.select_model(params.tags.split(','), sortby='name')
         return json.dumps(list(models))
